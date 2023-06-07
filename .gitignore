@@ -1,0 +1,31 @@
+# Compiled files
+/target/
+**/*.rs.bk
+
+# These directories include output of "cargo doc"
+/doc/
+/www/target/doc/
+
+# Output of the "cargo package" command
+/*.crate
+
+# You may want to ignore the SQLite database file as well.
+*.db
+*.db-journal
+
+# Dependency directory
+.cargo/
+
+# Rustup directory
+.rustup/
+
+# IDE - VSCode
+.vscode/
+*.code-workspace
+
+# IDE - IntelliJ
+.idea/
+
+# OS generated files
+.DS_Store
+Desktop.ini
