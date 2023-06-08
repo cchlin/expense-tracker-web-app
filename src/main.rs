@@ -1,16 +1,13 @@
-// mod controllers;
+mod models;
+
 
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use handlebars::Handlebars;
 use serde::Serialize;
-use rusqlite::Connection;
-use models::connect;
 // use controllers::{transaction};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // initialize the database connection
-    let connection = connect::initialize_database().unwrap();
 
     let mut handlebars = Handlebars::new();
     handlebars
@@ -19,7 +16,6 @@ async fn main() -> std::io::Result<()> {
 
     let server = HttpServer::new(move || {
         App::new()
-            .app_data(connection.clone())
             .app_data(web::Data::new(handlebars.clone()))
             .route("/", web::get().to(index))
             // .service(web::scope("transaction")

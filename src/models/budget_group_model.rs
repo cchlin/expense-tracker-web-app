@@ -10,7 +10,8 @@ pub struct BudgetGroup {
 
 impl BudgetGroup {
     // create a new budget group
-    pub fn create(conn: &Connection, name: String, budget_amount: f64) -> Result<usize> {
+    pub fn create(name: String, budget_amount: f64) -> Result<usize> {
+        let conn = connect::initialize_database().unwrap();
         conn.execute(
             "INSERT INTO budget_groups (name, budget_amount, remaining_budget) VALUES(?1, ?2, ?3)",
             params![name, budget_amount, budget_amount],

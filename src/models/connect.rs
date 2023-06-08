@@ -15,7 +15,7 @@ pub fn initialize_database() -> Result<Connection> {
             budget_group_id INTEGER NOT NULL,
             FOREIGN KEY(budget_group_id) REFERENCES budget_groups(id)
         )",
-        NO_PARAMS,
+        (),
     )?;
 
     // creates the budget_groups table if it does not exist
@@ -26,7 +26,7 @@ pub fn initialize_database() -> Result<Connection> {
             budget_amount REAL NOT NULL,
             remaining_budget REAL NOT NULL
         )",
-        NO_PARAMS,
+        (),
     )?;
 
     // return the connection
