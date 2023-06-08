@@ -1,10 +1,10 @@
-mod models;
-
+mod controllers;
 
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use handlebars::Handlebars;
 use serde::Serialize;
-// use controllers::{transaction};
+use serde_json::json;
+use controllers::budget_group_controller;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -18,8 +18,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(handlebars.clone()))
             .route("/", web::get().to(index))
-            // .service(web::scope("transaction")
-                            // .route("", web::get().to(transaction::get_transaction)))
+            .route("/expense", web::get().to(get_budget_groups))
     })
     .bind(("127.0.0.1", 5001))?
     .run();
@@ -34,10 +33,35 @@ struct TemplateData {
     body: String,
 }
 
-async fn index(template_enging: web::Data<Handlebars<'_>>) -> impl Responder {
-    let data = TemplateData {
+pub async fn index(template_enging: web::Data<Handlebars<'_>>) -> impl Responder {
+    let data = TemplateData { 
         body: String::from("Hello World!"),
     };
-    let body = template_enging.render("layout", &data).unwrap();
+    let index_content = template_enging.render("index", &data).unwrap();
+
+    let content = TemplateData {
+        body: index_content,
+    };
+    let body = template_enging.render("layout", &content).unwrap();
     HttpResponse::Ok().body(body)
 }
+
+pub async fn get_budget_groups(template_engine: web::Data<Handlebars<'_>>) -> impl Responder {
+    match budget_group_controller::get_budget_groups().await {
+        Some(group) => {
+            let data = json!({ "group": group });
+
+            let group_content = template_engine.render("expense/budget_group", &data).unwrap();
+
+            let layout_data = json!({ "body": group_content });
+
+            let body = template_engine.render("layout", &layout_data).unwrap();
+
+            HttpResponse::Ok().body(body)
+        },
+        None => {
+            HttpResponse::NotFound().body("Group not found")
+        }
+    }
+}
+

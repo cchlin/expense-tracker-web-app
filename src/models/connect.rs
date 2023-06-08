@@ -10,6 +10,7 @@ pub fn initialize_database() -> Result<Connection> {
         "CREATE TABLE IF NOT EXISTS transactions (
             id INTEGER PRIMARY KEY,
             amount REAL NOT NULL,
+            description TEXT NOT NULL,
             created_at TEXT NOT NULL,
             updated_at TEXT NOT NULL,
             budget_group_id INTEGER NOT NULL,
