@@ -1,0 +1,12 @@
+[package]
+name = "frontend"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+yew =  { version = "0.20.0", features = ["csr"] }
+yew-router = "0.17"
+gloo-net = "0.2" # for making fetch call
+serde = { version = "1.0", features = ["derive"] } # de-serializing JSON response
+wasm-bindgen-futures = "0.4" # For executing Rust Future as a Promise
+chrono = "0.4.26"
