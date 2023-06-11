@@ -27,14 +27,14 @@ pub async fn index() -> impl Responder {
 }
 
 pub async fn get_budget_groups() -> impl Responder {
-    match budget_group_controller::get_budget_groups().await {
-        Some(group) => {
-            let group_json = json!(group);
-            HttpResponse::Ok().json(group_json)
-        }
-        None => HttpResponse::NotFound().body("No group found"),
+    let groups = budget_group_controller::get_budget_groups().await;
+    if groups.is_empty() {
+        HttpResponse::NotFound().body("No groups found")
+    } else {
+        HttpResponse::Ok().json(&groups)
     }
 }
+
 
 #[cfg(test)]
 mod tests {

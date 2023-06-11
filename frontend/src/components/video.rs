@@ -26,6 +26,7 @@ pub fn videos_list(VideosListProps { videos, on_click }: &VideosListProps) -> Ht
                 on_click.emit(video.clone())
             })
         };
+
      html! {
         <p key={video.id} onclick={on_video_select}>{format!("Video file {}: {}", video.speaker, video.title)}</p>
      }

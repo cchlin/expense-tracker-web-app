@@ -2,8 +2,8 @@ mod components;
 
 use yew::prelude::*;
 use yew_router::prelude::*;
-use components::navbar::Navbar;
 use components::layout::Layout;
+use components::expense::Expense;
 
 #[derive(Clone, Routable, PartialEq)]
 enum Route {
@@ -37,7 +37,7 @@ fn switch(routes: Route) -> Html {
     match routes {
         Route::Home => html! { <h1>{ "Home" }</h1> },
         Route::Expense => html! {
-            <h1>{ "Expense Page" }</h1>
+            <Expense />
         },
         Route::About => html! { <h1>{ "About Page" }</h1> },
         Route::Secure => html! {
