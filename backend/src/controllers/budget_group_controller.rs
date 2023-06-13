@@ -25,6 +25,7 @@ pub async fn get_budget_groups() -> Vec<Group> {
     ]
 }
 
+
 #[cfg(test)]
 mod tests {
     use super::*;

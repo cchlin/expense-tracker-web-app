@@ -1,9 +1,10 @@
 mod components;
 
+use components::add_group::{expense_setting, ExpenseRoute};
+use components::expense::Expense;
+use components::layout::Layout;
 use yew::prelude::*;
 use yew_router::prelude::*;
-use components::layout::Layout;
-use components::expense::Expense;
 
 #[derive(Clone, Routable, PartialEq)]
 enum Route {
@@ -11,6 +12,8 @@ enum Route {
     Home,
     #[at("/expense")]
     Expense,
+    #[at("/expense/*")]
+    ExpenseRoute,
     #[at("/about")]
     About,
     #[at("/secure")]
@@ -38,6 +41,9 @@ fn switch(routes: Route) -> Html {
         Route::Home => html! { <h1>{ "Home" }</h1> },
         Route::Expense => html! {
             <Expense />
+        },
+        Route::ExpenseRoute => html! {
+           <Switch<ExpenseRoute> render={expense_setting} />
         },
         Route::About => html! { <h1>{ "About Page" }</h1> },
         Route::Secure => html! {

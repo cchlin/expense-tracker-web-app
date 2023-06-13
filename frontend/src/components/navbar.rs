@@ -2,7 +2,8 @@ use yew::prelude::*;
 
 #[function_component(Navbar)]
 pub fn navbar() -> Html {
-use yew::{classes, html};
+    use yew::{classes, html};
+
     html! {
             <nav class={classes!("navbar", "navbar-expand-sm", "bg-body-tertiary")}>
                 <div class={classes!("container-fluid")}>
@@ -11,7 +12,7 @@ use yew::{classes, html};
                         <span class={classes!("navbar-toggler-icon")}></span>
                     </button>
                     <div class={classes!("collapse", "navbar-collapse")} id="navbarSupportedContent">
-                        <ul class={classes!("navbar-nav", "me-auto", "mb-2", "mb-lg-0")}>
+                        <ul class={classes!("navbar-nav", "ms-auto", "mb-2", "mb-lg-0")}>
                             <li class={classes!("nav-item")}>
                                 <a class={classes!("nav-link")} aria-current="page" href="/">{ "Home" }</a>
                             </li>

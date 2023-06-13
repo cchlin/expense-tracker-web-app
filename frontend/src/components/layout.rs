@@ -7,14 +7,14 @@ pub struct LayoutProps {
 
 #[function_component(Layout)]
 pub fn layout(LayoutProps { children }: &LayoutProps) -> Html {
-    use yew::{classes, html};
-    use super::navbar::Navbar;
     use super::footer::Footer;
+    use super::navbar::Navbar;
+    use yew::{classes, html};
 
     html! {
         <>
             <Navbar />
-            <div class={classes!("mx-auto", "w-75", "my-5")}>{ children.clone() }</div>
+            <div class={classes!("mx-auto", "w-50", "my-5")}>{ children.clone() }</div>
             <Footer />
         </>
     }

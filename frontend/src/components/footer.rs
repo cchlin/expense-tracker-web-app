@@ -1,5 +1,5 @@
-use yew::prelude::*;
 use chrono::prelude::*;
+use yew::prelude::*;
 
 #[function_component(Footer)]
 pub fn footer() -> Html {

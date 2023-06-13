@@ -3,7 +3,7 @@ mod controllers;
 use actix_cors::Cors;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use controllers::budget_group_controller;
-use serde_json::json;
+use serde::Deserialize;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -13,6 +13,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .route("/", web::get().to(index))
             .route("/expense", web::get().to(get_budget_groups))
+            .route("/expense/add-group", web::post().to(add_group))
     })
     .bind(("127.0.0.1", 5001))?
     .run();
@@ -27,12 +28,27 @@ pub async fn index() -> impl Responder {
 }
 
 pub async fn get_budget_groups() -> impl Responder {
+    println!("hit /expense route");
     let groups = budget_group_controller::get_budget_groups().await;
     if groups.is_empty() {
         HttpResponse::NotFound().body("No groups found")
     } else {
         HttpResponse::Ok().json(&groups)
     }
+}
+
+#[derive(Deserialize)]
+pub struct FormData {
+    name: String,
+    budget_amount: f64,
+}
+
+// #[post("/expense/add_group")]
+pub async fn add_group(req_body: web::Json<FormData>) -> impl Responder {
+    println!("hit /expense/add-group");
+    println!("Name: {}, Budget: {}", req_body.name, req_body.budget_amount);
+
+    HttpResponse::Ok()
 }
 
 
