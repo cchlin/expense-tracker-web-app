@@ -6,17 +6,19 @@ pub fn create(amount: f64, description: String, date: String, budget_group_id: i
     let conn = initialize_database().unwrap();
 
     conn.execute(
-        "INSERT INTO transactions (amount, description, date, budget_group_id) VALUES (?1, ?2, ?3, ?4, ?5)",
+        "INSERT INTO transactions (amount, description, date, budget_group_id) VALUES (?1, ?2, ?3, ?4)",
         params![amount, description, date, budget_group_id],
     )?;
 
     Ok(conn.last_insert_rowid() as i32)
 }
 
-pub fn get_all() -> Result<Vec<Transaction>> {
+pub fn get_all(group_id: i32) -> Result<Vec<Transaction>> {
     let conn = initialize_database().unwrap();
     
-    let mut stmt = conn.prepare("SELECT * FROM transactions")?;
+    let query = format!("SELECT * FROM transactions WHERE budget_group_id = {}", group_id);
+    
+    let mut stmt = conn.prepare(&query)?;
 
     let transaction_iter = stmt.query_map([], |row| {
         Ok(Transaction {
@@ -35,4 +37,12 @@ pub fn get_all() -> Result<Vec<Transaction>> {
     }
 
     Ok(transactions)
+}
+
+pub fn delete(id: i32) -> Result<()> {
+    let conn = initialize_database().unwrap();
+
+    conn.execute("DELETE FROM transactions WHERE id = ?1", params![id])?;
+
+    Ok(())
 }

@@ -1,12 +1,12 @@
 use super::add_group::{AddGroup, AddGroupForm};
 use super::add_transaction::AddTransactionForm;
+use super::group::GroupTransaction;
 use gloo_net::http::Request;
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
 use web_sys::console;
 use yew::prelude::*;
 use yew_router::Routable;
-use super::group::GroupTransaction;
 
 #[derive(Clone, Routable, PartialEq)]
 pub enum ExpenseRoute {
@@ -41,15 +41,15 @@ struct Group {
     remaining_budget: f64,
 }
 
-impl Group {
-    pub fn fields(&self) -> Vec<String> {
-        vec![
-            format!("{}", self.name),
-            format!("{}", self.budget_amount),
-            format!("{}", self.remaining_budget),
-        ]
-    }
-}
+// impl Group {
+//     pub fn fields(&self) -> Vec<String> {
+//         vec![
+//             format!("{}", self.name),
+//             format!("{}", self.budget_amount),
+//             format!("{}", self.remaining_budget),
+//         ]
+//     }
+// }
 
 #[derive(Properties, PartialEq, Clone)]
 struct GroupProps {
@@ -58,7 +58,7 @@ struct GroupProps {
 
 #[function_component(GroupCard)]
 fn group_card(GroupProps { group }: &GroupProps) -> Html {
-    let field = group.fields();
+    // let field = group.fields();
 
     let url = format!("/expense/group/{}", group.id);
     let spent = group.budget_amount - group.remaining_budget;

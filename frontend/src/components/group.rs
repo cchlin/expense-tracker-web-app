@@ -3,6 +3,7 @@ use yew::prelude::*;
 use web_sys::{console, window};
 use serde_wasm_bindgen::to_value;
 use serde::{Serialize, Deserialize};
+use serde_json::json;
 
 
 #[function_component(GroupButtons)]
@@ -21,7 +22,7 @@ fn group_buttons(GroupIdProps { id }: &GroupIdProps) -> Html {
                 if resp.status() != 200 {
                     let jsvalueresp = to_value(&resp.status()).unwrap();
                     console::log_1(&jsvalueresp);
-                }
+                } 
                 let window = window().expect("error getting window");
                 let location = window.location();
                 let _ = location.set_href("/expense");
@@ -41,7 +42,7 @@ fn group_buttons(GroupIdProps { id }: &GroupIdProps) -> Html {
 
     html! {
         <>
-            <div class="container sticky-bottom d-flex justify-content-center" style="padding-bottom: 80px;">
+            <div class="container sticky-bottom d-flex justify-content-center mt-3" style="padding-bottom: 80px;">
                 <div class="row">
                     <div clas="col">
                         <button type="button" class="btn btn-outline-primary me-1" onclick={on_add_button}>{"Add transaction"}</button>
@@ -58,7 +59,7 @@ pub struct GroupIdProps {
     pub id: i32,
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, PartialEq)]
 struct Transaction {
     id: i32,
     amount: f64,
@@ -74,7 +75,57 @@ struct TransactionProps {
 
 #[function_component(TransactionCard)]
 fn transaction_card(TransactionProps { transaction }: &TransactionProps) -> Html {
-    
+    let transaction = transaction.clone();
+    let on_delete_click = {
+        let id = transaction.budget_group_id.clone();
+        Callback::from(move |_| {
+
+            wasm_bindgen_futures::spawn_local(async move {
+                let data = json!({
+                    "id": transaction.id.clone(),
+                    "amount": transaction.amount.clone(),
+                    "description": "",
+                    "date": "",
+                    "budget_group_id": transaction.budget_group_id.clone(),
+                });
+                let url = format!("http://localhost:5001/expense/transaction");
+                let resp = Request::delete(&url)
+                .json(&data)
+                .unwrap()
+                .send()
+                .await
+                .unwrap();
+
+                if resp.status() != 200 {
+                    let jsvalueresp = to_value(&resp.status()).unwrap();
+                    console::log_1(&jsvalueresp);
+                } 
+                let group_u = format!("/expense/group/{}", id);
+                let window = window().expect("error getting window");
+                let location = window.location();
+                let _ = location.set_href(&group_u);
+            });
+        })
+    };
+
+    html! {
+        <div class="card my-1 mx-auto" style="max-width: 400px;">
+            <div>
+                <div class="container text-bg-light">
+                    <div class="row p-2">
+                        <div class="col">
+                            <div class="row" style="font-size: 12px;">{ transaction.description.clone() }</div>
+                            <div class="row text-secondary" style="font-size: 10px;">{ transaction.date.clone() }</div>
+                        </div>
+                        <div class="col-auto text-end">
+                            <div class="row text-end justify-content-end text-danger" style="font-size: 12px;">{ format!("- $ {}", transaction.amount.to_string()) }</div>
+                                <a class="row text-end justify-content-end link-primary link-offset-3 link-underline-opacity-0 link-underline-opacity-100-hover" style="font-size: 12px;" onclick={on_delete_click}>{ "Delete" }</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 }
 
 #[derive(Properties, PartialEq, Clone)]

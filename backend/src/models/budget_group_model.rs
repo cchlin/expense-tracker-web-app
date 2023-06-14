@@ -45,6 +45,40 @@ pub fn delete(id: i32) -> Result<()> {
 
     conn.execute(
         "DELETE FROM budget_groups WHERE id = ?1", params![id])?;
+    
+    conn.execute(
+        "DELETE FROM transactions WHERE budget_group_id = ?1",
+        params![id])?;
 
     Ok(())
+}
+
+pub fn minus_remaining(id: i32, amount_to_deduct: f64) -> Result<()> {
+    let conn = initialize_database().unwrap();
+
+    conn.execute(
+        "UPDATE budget_groups SET remaining_budget = remaining_budget - ?1 WHERE id = ?2",
+        params![amount_to_deduct, id],
+    )?;
+
+    Ok(())
+}
+
+pub fn plus_remaining(id: i32, amount_to_add: f64) -> Result<()> {
+    let conn = initialize_database().unwrap();
+
+    conn.execute("UPDATE budget_groups SET remaining_budget = remaining_budget + ?1 WHERE id = ?2", 
+    params![amount_to_add, id],
+    )?;
+    
+    Ok(())
+}
+
+pub fn get_one(id: i32) -> Result<Group> {
+    let conn = initialize_database().unwrap();
+
+    let group = conn.execute("SELECT * FROM budget_groups WHERE id = ?1",
+    params![id])?;
+
+    Ok(group)
 }

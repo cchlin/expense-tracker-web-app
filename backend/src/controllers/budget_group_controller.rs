@@ -1,6 +1,6 @@
 use super::super::models::budget_group_model;
 use serde::{Serialize, Deserialize};
-use actix_web::{web, HttpResponse, Responder};
+use actix_web::{web, HttpResponse, Responder, http::header::http_percent_encode};
 use serde_json::json;
 
 #[derive(Serialize)]
@@ -15,10 +15,11 @@ pub struct Group {
 pub async fn get_budget_groups() -> impl Responder {
     match budget_group_model::get_all() {
         Ok(groups) => {
+            
             HttpResponse::Ok().json(&groups)
         },
-        Err(_e) => {
-            HttpResponse::Ok().body(Vec::new())
+        Err(e) => {
+            HttpResponse::InternalServerError().body(format!("error: {}", e))
         }
     }
 }
@@ -46,6 +47,18 @@ pub async fn delete_group(path: web::Path<i32>) -> impl Responder {
     match budget_group_model::delete(id) {
         Ok(_) => HttpResponse::Ok().json(json!({"status": "success"})),
         Err(e) => HttpResponse::InternalServerError().body(format!("error: {:?}", e))
+    }
+}
+
+pub async fn get_one_group(path: web::Path<i32>) -> impl Responder {
+    let id = path.into_inner();
+    match budget_group_model::get_one(id) {
+        Ok(group) => {
+            HttpResponse::Ok().json(&group)
+        },
+        Err(e) => {
+            HttpResponse::InternalServerError().body(format!("error: {:?}", e))
+        }
     }
 }
 

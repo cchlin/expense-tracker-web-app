@@ -1,10 +1,10 @@
 use actix_web::{web, Responder, HttpResponse};
 use serde::{Serialize, Deserialize};
 use chrono::Utc;
-use super::super::models::transaction_model;
+use super::super::models::{transaction_model, budget_group_model};
 use serde_json::json;
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct Transaction {
     pub id: i32,
     pub amount: f64,
@@ -20,16 +20,57 @@ pub struct TransactionData {
     budget_group_id: i32,
 }
 
+pub async fn get_transactions(path: web::Path<i32>) -> impl Responder {
+    let id = path.into_inner();
+    match transaction_model::get_all(id) {
+        Ok(transactions) => {
+            HttpResponse::Ok().json(&transactions)
+        },
+        Err(e) => {
+            HttpResponse::InternalServerError().body(format!("error: {}", e))
+        }
+    }
+}
+
 pub async fn add_transaction(req_body: web::Json<TransactionData>) -> impl Responder {
-    let date = Utc::now().to_string();
-    println!("hit /expense/group/id");
-    println!("amount: {}", req_body.amount);
-    println!("description: {}", req_body.description);
+    let date = Utc::now().format("%Y-%m-%d %H:%M").to_string();
     match transaction_model::create(req_body.amount.clone(), req_body.description.clone(), date, req_body.budget_group_id.clone()) {
         Ok(id) => {
-            HttpResponse::Ok().json(json!({"id": id}))
+            // update the remaining budget in the group
+            match budget_group_model::minus_remaining(req_body.budget_group_id.clone(), req_body.amount.clone()) {
+                Ok(()) => {
+                    HttpResponse::Ok().json(json!({"id": id}))
+                },
+                Err(e) => {
+                    println!("Error updating remaining budget: {:?}", e);
+                    HttpResponse::InternalServerError().body(format!("error: {:?}", e))
+                }
+            }
         },
-        Err(e) => HttpResponse::InternalServerError().body(format!("error: {:?}", e))
+        Err(e) => {
+            println!("{:?}", e);
+            HttpResponse::InternalServerError().body(format!("error: {:?}", e))}
     }
-    
+}
+
+pub async fn delete_transaction(req_body: web::Json<Transaction>) -> impl Responder {
+    let id = req_body.id;
+    let amount = req_body.amount;
+    let budget_group_id = req_body.budget_group_id;
+    match transaction_model::delete(id) {
+        Ok(_) => {
+            match budget_group_model::plus_remaining(budget_group_id.clone(), amount.clone()) {
+                Ok(()) => HttpResponse::Ok().json(json!({"status": "success"})),
+                Err(e) => {
+                    println!("Error updating remaining budget: {:?}", e);
+                    HttpResponse::InternalServerError().body(format!("error: {:?}", e))
+                }
+            }
+        },
+
+        Err(e) => {
+            println!("{:?}", e);
+            HttpResponse::InternalServerError().body(format!("error: {:?}", e))
+        }
+    }
 }
