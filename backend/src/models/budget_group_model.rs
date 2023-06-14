@@ -3,7 +3,16 @@ use super::super::controllers::budget_group_controller::Group;
 use super::connect::initialize_database;
 use rusqlite::{params, Result};
 
-// Function to create a new budget group in the database
+/// Inserts a new budget group into the database.
+///
+/// # Arguments
+///
+/// * `name` - A string that holds the name of the budget group.
+/// * `budget_amount` - A floating point that holds the budget amount for the group.
+///
+/// # Returns
+///
+/// Returns an i32 as the ID of the new budget group.
 pub fn create(name: String, budget_amount: f64) -> Result<i32> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
@@ -19,7 +28,11 @@ pub fn create(name: String, budget_amount: f64) -> Result<i32> {
     Ok(id)
 }
 
-// Function to retrieve all budget groups from the database
+/// Retrieves all budget groups from the database.
+///
+/// # Returns
+///
+/// Returns a Vector of `Group` objects.
 pub fn get_all() -> Result<Vec<Group>> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
@@ -47,7 +60,15 @@ pub fn get_all() -> Result<Vec<Group>> {
     Ok(groups)
 }
 
-// Function to delete a budget group by its ID
+/// Deletes a specific budget group and its associated transactions from the database.
+///
+/// # Arguments
+///
+/// * `id` - An i32 that holds the ID of the budget group to delete.
+///
+/// # Returns
+///
+/// Returns an empty Result upon successful execution.
 pub fn delete(id: i32) -> Result<()> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
@@ -65,7 +86,16 @@ pub fn delete(id: i32) -> Result<()> {
     Ok(())
 }
 
-// Function to reduce the remaining budget of a group
+/// Decreases the remaining budget of a specific budget group.
+///
+/// # Arguments
+///
+/// * `id` - An i32 that holds the ID of the budget group.
+/// * `amount_to_deduct` - A floating point that holds the amount to deduct.
+///
+/// # Returns
+///
+/// Returns an empty Result upon successful execution.
 pub fn minus_remaining(id: i32, amount_to_deduct: f64) -> Result<()> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
@@ -80,7 +110,16 @@ pub fn minus_remaining(id: i32, amount_to_deduct: f64) -> Result<()> {
     Ok(())
 }
 
-// Function to increase the remaining budget of a group
+/// Increases the remaining budget of a specific budget group.
+///
+/// # Arguments
+///
+/// * `id` - An i32 that holds the ID of the budget group.
+/// * `amount_to_add` - A floating point that holds the amount to add.
+///
+/// # Returns
+///
+/// Returns an empty Result upon successful execution.
 pub fn plus_remaining(id: i32, amount_to_add: f64) -> Result<()> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
@@ -95,7 +134,15 @@ pub fn plus_remaining(id: i32, amount_to_add: f64) -> Result<()> {
     Ok(())
 }
 
-// Function to retrieve a single budget group by its ID
+/// Retrieves a specific budget group from the database.
+///
+/// # Arguments
+///
+/// * `id` - An i32 that holds the ID of the budget group.
+///
+/// # Returns
+///
+/// Returns a `Group` object.
 pub fn get_one(id: i32) -> Result<Group> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();

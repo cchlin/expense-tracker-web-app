@@ -2,7 +2,18 @@ use super::super::controllers::transaction_controller::Transaction;
 use super::connect::initialize_database;
 use rusqlite::{params, Result};
 
-// Function to create a new transaction in the database
+/// Inserts a new transaction into the database.
+///
+/// # Arguments
+///
+/// * `amount` - A floating point that holds the amount of the transaction.
+/// * `description` - A string that describes the transaction.
+/// * `date` - A string that holds the date of the transaction.
+/// * `budget_group_id` - An i32 that holds the budget group ID of the transaction.
+///
+/// # Returns
+///
+/// Returns an i32 as the ID of the new transaction.
 pub fn create(amount: f64, description: String, date: String, budget_group_id: i32) -> Result<i32> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
@@ -17,7 +28,15 @@ pub fn create(amount: f64, description: String, date: String, budget_group_id: i
     Ok(conn.last_insert_rowid() as i32)
 }
 
-// Function to retrieve all transactions associated with a specific budget group
+/// Retrieves all transactions for a specific budget group from the database.
+///
+/// # Arguments
+///
+/// * `group_id` - An i32 that holds the ID of the budget group.
+///
+/// # Returns
+///
+/// Returns a Vector of `Transaction` objects.
 pub fn get_all(group_id: i32) -> Result<Vec<Transaction>> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
@@ -52,7 +71,15 @@ pub fn get_all(group_id: i32) -> Result<Vec<Transaction>> {
     Ok(transactions)
 }
 
-// Function to delete a transaction by its ID
+/// Deletes a specific transaction from the database.
+///
+/// # Arguments
+///
+/// * `id` - An i32 that holds the ID of the transaction to delete.
+///
+/// # Returns
+///
+/// Returns an empty Result upon successful execution.
 pub fn delete(id: i32) -> Result<()> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
