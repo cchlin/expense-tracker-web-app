@@ -2,6 +2,7 @@ mod components;
 
 use components::expense::{Expense, expense_setting, ExpenseRoute};
 use components::layout::Layout;
+use components::login::Login;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -37,7 +38,9 @@ fn secure() -> Html {
 
 fn switch(routes: Route) -> Html {
     match routes {
-        Route::Home => html! { <h1>{ "Home" }</h1> },
+        Route::Home => html! { 
+            <Login />
+         },
         Route::Expense => html! {
             <Expense />
         },

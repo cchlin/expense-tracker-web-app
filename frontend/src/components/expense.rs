@@ -8,6 +8,8 @@ use web_sys::console;
 use yew::prelude::*;
 use yew_router::Routable;
 
+
+
 #[derive(Clone, Routable, PartialEq)]
 pub enum ExpenseRoute {
     #[at("/expense/group/:id")]
@@ -34,11 +36,11 @@ pub fn expense_setting(route: ExpenseRoute) -> Html {
 
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
-struct Group {
-    id: i32,
-    name: String,
-    budget_amount: f64,
-    remaining_budget: f64,
+pub struct Group {
+    pub id: i32,
+    pub name: String,
+    pub budget_amount: f64,
+    pub remaining_budget: f64,
 }
 
 // impl Group {
@@ -64,7 +66,7 @@ fn group_card(GroupProps { group }: &GroupProps) -> Html {
     let spent = group.budget_amount - group.remaining_budget;
 
     html! {
-            <div class="card my-4 mx-auto text-bg-light" style="max-width: 400px;">
+            <div class="card my-4 mx-auto text-bg-light groupcard" style="max-width: 400px;">
                 <div class="card-body">
                     <div class="container">
                         <div class="row fs-5">
@@ -76,7 +78,7 @@ fn group_card(GroupProps { group }: &GroupProps) -> Html {
                        <div class="row">
                            <div class="col fst-lighter" style="font-size: 13px;">
                                 <span>{ format!("${}", group.budget_amount.to_string()) }</span>
-                                <span class="text-danger">{ format!("  - ${}", spent.to_string()) }</span>
+                                <span class="text-danger">{ format!("  - ${:.5}", spent.to_string()) }</span>
                            </div>
                            <div class="col text-end">
                             <a href={url} class="link-primary link-offset-3 link-underline-opacity-0 link-underline-opacity-100-hover">{ "Check" }</a>

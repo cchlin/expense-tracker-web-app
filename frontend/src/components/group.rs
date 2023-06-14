@@ -4,6 +4,7 @@ use web_sys::{console, window};
 use serde_wasm_bindgen::to_value;
 use serde::{Serialize, Deserialize};
 use serde_json::json;
+use super::super::components::sum::Sum;
 
 
 #[function_component(GroupButtons)]
@@ -176,6 +177,7 @@ pub fn show_group_transactions(GroupIdProps { id }: &GroupIdProps) -> Html {
     html! {
         <>
             <div class="mx-auto" style="max-width: 400px;">
+                <Sum group_id={id}/>
                 <TransactionList transactions={(*transactions).clone()} />
                 <GroupButtons id={id}/>
             </div>

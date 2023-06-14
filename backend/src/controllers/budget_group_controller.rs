@@ -1,6 +1,6 @@
 use super::super::models::budget_group_model;
 use serde::{Serialize, Deserialize};
-use actix_web::{web, HttpResponse, Responder, http::header::http_percent_encode};
+use actix_web::{web, HttpResponse, Responder};
 use serde_json::json;
 
 #[derive(Serialize)]

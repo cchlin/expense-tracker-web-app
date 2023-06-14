@@ -77,8 +77,15 @@ pub fn plus_remaining(id: i32, amount_to_add: f64) -> Result<()> {
 pub fn get_one(id: i32) -> Result<Group> {
     let conn = initialize_database().unwrap();
 
-    let group = conn.execute("SELECT * FROM budget_groups WHERE id = ?1",
-    params![id])?;
+    let group: Group = conn.query_row("SELECT * FROM budget_groups WHERE id = ?1",
+    params![id], |row| {
+        Ok(Group {
+            id: row.get(0)?,
+            name: row.get(1)?,
+            budget_amount: row.get(2)?,
+            remaining_budget: row.get(3)?,
+        })
+    })?;
 
     Ok(group)
 }
