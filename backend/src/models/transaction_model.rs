@@ -49,3 +49,30 @@ pub fn delete(id: i32) -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_create() -> Result<()> {
+        let id = create(100.0, String::from("Test Transaction"), String::from("2023-06-15"), 1)?;
+        assert!(id > 0);
+        Ok(())
+    }
+
+    #[test]
+    fn test_get_all() -> Result<()> {
+        let transactions = get_all(1)?;
+        assert!(transactions.len() > 0);
+        Ok(())
+    }
+
+    #[test]
+    fn test_delete() -> Result<()> {
+        delete(1)?;
+        let transactions = get_all(1)?;
+        assert!(transactions.iter().find(|t| t.id == 1).is_none());
+        Ok(())
+    }
+}
