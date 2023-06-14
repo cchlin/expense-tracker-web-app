@@ -1,7 +1,7 @@
 use super::super::models::budget_group_model;
-use super::super::FormData;
-use rusqlite::Result;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
+use actix_web::{web, HttpResponse, Responder};
+use serde_json::json;
 
 #[derive(Serialize)]
 pub struct Group {
@@ -11,17 +11,52 @@ pub struct Group {
     pub remaining_budget: f64,
 }
 
-pub async fn get_budget_groups() -> Vec<Group> {
+// pub async fn get_budget_groups() -> Vec<Group> {
+//     match budget_group_model::get_all() {
+//         Ok(groups) => {
+//             groups
+//         },
+//         Err(_) => Vec::new(),
+//     }
+// }
+
+pub async fn get_budget_groups() -> impl Responder {
     match budget_group_model::get_all() {
         Ok(groups) => {
-            groups
+            HttpResponse::Ok().json(&groups)
         },
-        Err(_) => Vec::new(),
+        Err(_e) => {
+            HttpResponse::Ok().body(Vec::new())
+        }
     }
 }
 
-pub async fn add_group(form_data: FormData) -> Result<i32> {
-    budget_group_model::create(form_data.name, form_data.budget_amount)
+#[derive(Deserialize)]
+pub struct FormData {
+    name: String,
+    budget_amount: f64,
+}
+
+pub async fn add_group(req_body: web::Json<FormData>) -> impl Responder {
+    match budget_group_model::create(req_body.name.clone(), req_body.budget_amount.clone()) {
+        Ok(id) => {
+            println!("id: {}", id);
+            HttpResponse::Ok().json(json!({"id": id}))
+        }
+        Err(e) => {
+            println!("error: {:?}", e);
+            HttpResponse::InternalServerError().body(format!("error: {:?}", e))
+        }
+    }
+}
+
+pub async fn delete_group(path: web::Path<i32>) -> impl Responder {
+    println!("hit /expense/group delete");
+    let id = path.into_inner();
+    match budget_group_model::delete(id) {
+        Ok(_) => HttpResponse::Ok().json(json!({"status": "success"})),
+        Err(e) => HttpResponse::InternalServerError().body(format!("error: {:?}", e))
+    }
 }
 
 // #[cfg(test)]

@@ -3,7 +3,7 @@ use yew_router::prelude::*;
 use web_sys::HtmlInputElement;
 use serde::{Serialize, Deserialize};
 use gloo_net::http::Request;
-use web_sys::console;
+use web_sys::{console, window};
 use serde_wasm_bindgen::to_value;
 
 
@@ -31,7 +31,6 @@ struct FormData {
 pub fn add_group_form() -> Html {
     let input_name_ref = use_node_ref();
     let input_number_ref = use_node_ref();
-    let navigator = use_navigator().unwrap();
 
     let form_state = use_state(|| FormData {
         name: String::from(""),
@@ -71,7 +70,6 @@ pub fn add_group_form() -> Html {
     };
 
     let onsubmit = {
-        let navigator = navigator.clone();
         let form_state = form_state.clone();
         Callback::from(move |event: yew::events::SubmitEvent| {
             event.prevent_default();
@@ -98,8 +96,11 @@ pub fn add_group_form() -> Html {
                     console::log_1(&jsvalueresp);
                 }
 
+                let window = window().expect("error getting window");
+                let location = window.location();
+                let _ = location.set_href("/expense");
+
             });
-            navigator.replace(&super::super::Route::Expense);
         })
     };
 

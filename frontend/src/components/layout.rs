@@ -14,7 +14,7 @@ pub fn layout(LayoutProps { children }: &LayoutProps) -> Html {
     html! {
         <>
             <Navbar />
-            <div class={classes!("mx-auto", "w-50", "my-5")}>{ children.clone() }</div>
+            <div class="mx-auto w-50 my-5" style="min-width: 350px;">{ children.clone() }</div>
             <Footer />
         </>
     }

@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
 use web_sys::console;
 use yew::prelude::*;
-use yew_router::{Routable, navigator};
+use yew_router::Routable;
 use super::group::GroupTransaction;
 
 #[derive(Clone, Routable, PartialEq)]
@@ -58,7 +58,7 @@ fn group_card(GroupProps { group }: &GroupProps) -> Html {
     let spent = group.budget_amount - group.remaining_budget;
 
     html! {
-            <div class="card my-4 mx-auto text-bg-light" style="width: 400px;">
+            <div class="card my-4 mx-auto text-bg-light" style="max-width: 400px;">
                 <div class="card-body">
                     <div class="container">
                         <div class="row fs-5">

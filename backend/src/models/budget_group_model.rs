@@ -39,3 +39,12 @@ pub fn get_all() -> Result<Vec<Group>> {
     
     Ok(groups)
 }
+
+pub fn delete(id: i32) -> Result<()> {
+    let conn = initialize_database().unwrap();
+
+    conn.execute(
+        "DELETE FROM budget_groups WHERE id = ?1", params![id])?;
+
+    Ok(())
+}
