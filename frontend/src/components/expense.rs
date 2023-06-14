@@ -8,8 +8,6 @@ use web_sys::console;
 use yew::prelude::*;
 use yew_router::Routable;
 
-
-
 #[derive(Clone, Routable, PartialEq)]
 pub enum ExpenseRoute {
     #[at("/expense/group/:id")]
@@ -28,12 +26,11 @@ pub fn expense_setting(route: ExpenseRoute) -> Html {
         ExpenseRoute::Group { id } => html! {
             <GroupTransaction id={id} />
         },
-        ExpenseRoute::AddTransactionForm { id }=> html! {
+        ExpenseRoute::AddTransactionForm { id } => html! {
             <AddTransactionForm budget_group_id={id} />
-        }
+        },
     }
 }
-
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Group {
@@ -72,12 +69,12 @@ fn group_card(GroupProps { group }: &GroupProps) -> Html {
                         <div class="row fs-5">
                             // <a href={url}>
                                 <div class="col">{ group.name.to_string() }</div>
-                                <div class="col text-end">{ format!("$ {}", group.remaining_budget.to_string()) }</div>
+                                <div class="col text-end">{ format!("$ {}", group.remaining_budget) }</div>
                             // </a>
                         </div>
                        <div class="row">
                            <div class="col fst-lighter" style="font-size: 13px;">
-                                <span>{ format!("${}", group.budget_amount.to_string()) }</span>
+                                <span>{ format!("${}", group.budget_amount) }</span>
                                 <span class="text-danger">{ format!("  - ${:.5}", spent.to_string()) }</span>
                            </div>
                            <div class="col text-end">
@@ -112,7 +109,7 @@ fn groups_list(GroupsProps { groups }: &GroupsProps) -> Html {
 
 #[function_component(Expense)]
 pub fn expense() -> Html {
-    let groups = use_state(|| vec![]);
+    let groups = use_state(Vec::new);
     {
         let groups = groups.clone();
         use_effect_with_deps(
@@ -137,8 +134,6 @@ pub fn expense() -> Html {
             (),
         );
     }
-
-
 
     html! {
         <>

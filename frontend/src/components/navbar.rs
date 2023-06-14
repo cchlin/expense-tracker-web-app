@@ -20,9 +20,6 @@ pub fn navbar() -> Html {
                                 <a class={classes!("nav-link")} href="/expense">{ "Expense" }</a>
                             </li>
                             <li class={classes!("nav-item")}>
-                                <a class={classes!("nav-link")} href="/secure">{ "Security" }</a>
-                            </li>
-                            <li class={classes!("nav-item")}>
                                 <a class={classes!("nav-link")} href="/about">{ "About" }</a>
                             </li>
                         </ul>

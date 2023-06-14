@@ -1,29 +1,25 @@
-use gloo_net::http::Request;
-use yew::prelude::*;
-use web_sys::{console, window};
-use serde_wasm_bindgen::to_value;
-use serde::{Serialize, Deserialize};
-use serde_json::json;
 use super::super::components::sum::Sum;
-
+use gloo_net::http::Request;
+use serde::{Deserialize, Serialize};
+use serde_json::json;
+use serde_wasm_bindgen::to_value;
+use web_sys::{console, window};
+use yew::prelude::*;
 
 #[function_component(GroupButtons)]
 fn group_buttons(GroupIdProps { id }: &GroupIdProps) -> Html {
-    let id = id.clone();
+    let id = *id;
     let on_delete_group_click = {
         Callback::from(move |_| {
-            let id = id.clone();
+            let id = id;
             wasm_bindgen_futures::spawn_local(async move {
                 let url = format!("http://localhost:5001/expense/group/{}", id);
-                let resp = Request::delete(&url)
-                    .send()
-                    .await
-                    .unwrap();
+                let resp = Request::delete(&url).send().await.unwrap();
 
                 if resp.status() != 200 {
                     let jsvalueresp = to_value(&resp.status()).unwrap();
                     console::log_1(&jsvalueresp);
-                } 
+                }
                 let window = window().expect("error getting window");
                 let location = window.location();
                 let _ = location.set_href("/expense");
@@ -32,7 +28,7 @@ fn group_buttons(GroupIdProps { id }: &GroupIdProps) -> Html {
     };
 
     let on_add_button = {
-        let id = id.clone();
+        let id = id;
         Callback::from(move |_| {
             let url = format!("/expense/group/{}/add_transaction", id);
             let window = window().expect("Error getting window");
@@ -78,9 +74,8 @@ struct TransactionProps {
 fn transaction_card(TransactionProps { transaction }: &TransactionProps) -> Html {
     let transaction = transaction.clone();
     let on_delete_click = {
-        let id = transaction.budget_group_id.clone();
+        let id = transaction.budget_group_id;
         Callback::from(move |_| {
-
             wasm_bindgen_futures::spawn_local(async move {
                 let data = json!({
                     "id": transaction.id.clone(),
@@ -89,18 +84,17 @@ fn transaction_card(TransactionProps { transaction }: &TransactionProps) -> Html
                     "date": "",
                     "budget_group_id": transaction.budget_group_id.clone(),
                 });
-                let url = format!("http://localhost:5001/expense/transaction");
-                let resp = Request::delete(&url)
-                .json(&data)
-                .unwrap()
-                .send()
-                .await
-                .unwrap();
+                let resp = Request::delete("http://localhost:5001/expense/transaction")
+                    .json(&data)
+                    .unwrap()
+                    .send()
+                    .await
+                    .unwrap();
 
                 if resp.status() != 200 {
                     let jsvalueresp = to_value(&resp.status()).unwrap();
                     console::log_1(&jsvalueresp);
-                } 
+                }
                 let group_u = format!("/expense/group/{}", id);
                 let window = window().expect("error getting window");
                 let location = window.location();
@@ -119,7 +113,7 @@ fn transaction_card(TransactionProps { transaction }: &TransactionProps) -> Html
                             <div class="row text-secondary" style="font-size: 10px;">{ transaction.date.clone() }</div>
                         </div>
                         <div class="col-auto text-end">
-                            <div class="row text-end justify-content-end text-danger" style="font-size: 12px;">{ format!("- $ {}", transaction.amount.to_string()) }</div>
+                            <div class="row text-end justify-content-end text-danger" style="font-size: 12px;">{ format!("- $ {}", transaction.amount) }</div>
                                 <a class="row text-end justify-content-end link-primary link-offset-3 link-underline-opacity-0 link-underline-opacity-100-hover" style="font-size: 12px;" onclick={on_delete_click}>{ "Delete" }</a>
                         </div>
                     </div>
@@ -146,14 +140,13 @@ fn transaction_list(TransactionsProps { transactions }: &TransactionsProps) -> H
         .collect::<Html>()
 }
 
-
 #[function_component(GroupTransaction)]
 pub fn show_group_transactions(GroupIdProps { id }: &GroupIdProps) -> Html {
-    let transactions = use_state(|| vec![]);
-    let id = id.clone();
+    let transactions = use_state(Vec::new);
+    let id = *id;
     {
         let transactions = transactions.clone();
-        let id = id.clone();
+        let id = id;
         use_effect_with_deps(
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
@@ -171,7 +164,9 @@ pub fn show_group_transactions(GroupIdProps { id }: &GroupIdProps) -> Html {
 
                     transactions.set(fetched_transactions);
                 })
-            }, ());
+            },
+            (),
+        );
     }
 
     html! {

@@ -1,7 +1,7 @@
-use yew::function_component;
-use yew::prelude::*;
 use super::super::components::expense::Group;
 use gloo_net::http::Request;
+use yew::function_component;
+use yew::prelude::*;
 
 #[derive(Clone, Properties, PartialEq)]
 pub struct SumProps {
@@ -16,28 +16,31 @@ pub fn sum(SumProps { group_id }: &SumProps) -> Html {
         budget_amount: 0.0,
         remaining_budget: 0.0,
     });
-    let group_id = group_id.clone();
+    let group_id = *group_id;
     {
         let group = group.clone();
-        use_effect_with_deps(move |_| {
-            wasm_bindgen_futures::spawn_local(async move {
-                let url = format!("http://localhost:5001/expense/{}", group_id);
-                let fetched_group: Group = Request::get(&url)
-                    .send()
-                    .await
-                    .unwrap()
-                    .json()
-                    .await
-                    .unwrap();
+        use_effect_with_deps(
+            move |_| {
+                wasm_bindgen_futures::spawn_local(async move {
+                    let url = format!("http://localhost:5001/expense/{}", group_id);
+                    let fetched_group: Group = Request::get(&url)
+                        .send()
+                        .await
+                        .unwrap()
+                        .json()
+                        .await
+                        .unwrap();
 
-                group.set(Group {
-                    id: fetched_group.id,
-                    name: fetched_group.name,
-                    budget_amount: fetched_group.budget_amount,
-                    remaining_budget: fetched_group.remaining_budget,
-                })
-            });
-        }, ());
+                    group.set(Group {
+                        id: fetched_group.id,
+                        name: fetched_group.name,
+                        budget_amount: fetched_group.budget_amount,
+                        remaining_budget: fetched_group.remaining_budget,
+                    })
+                });
+            },
+            (),
+        );
     }
 
     html! {

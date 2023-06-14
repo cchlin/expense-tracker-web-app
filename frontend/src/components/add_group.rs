@@ -1,10 +1,9 @@
+use gloo_net::http::Request;
+use serde::{Deserialize, Serialize};
+use serde_wasm_bindgen::to_value;
+use web_sys::{console, window, HtmlInputElement};
 use yew::prelude::*;
 use yew_router::prelude::*;
-use serde::{Serialize, Deserialize};
-use gloo_net::http::Request;
-use web_sys::{console, window, HtmlInputElement};
-use serde_wasm_bindgen::to_value;
-
 
 #[derive(Clone, PartialEq, Properties, Serialize, Deserialize)]
 struct FormData {
@@ -29,10 +28,10 @@ pub fn add_group_form() -> Html {
             if let Some(input) = input_name_ref.cast::<HtmlInputElement>() {
                 let value = input.value();
                 // let form_state = form_state.clone();
-                form_state.set(FormData { 
-                    name: value.clone(),
+                form_state.set(FormData {
+                    name: value,
                     budget_amount: form_state.budget_amount,
-                 });
+                });
             }
         })
     };
@@ -46,25 +45,24 @@ pub fn add_group_form() -> Html {
                 // let form_state = form_state.clone();
                 if let Ok(parsed_value) = value.parse::<f64>() {
                     form_state.set(FormData {
-                            name: form_state.name.clone(),
-                            budget_amount: parsed_value.clone(),
-                        });
+                        name: form_state.name.clone(),
+                        budget_amount: parsed_value,
+                    });
                 }
             }
         })
     };
 
     let onsubmit = {
-        let form_state = form_state.clone();
         Callback::from(move |event: yew::events::SubmitEvent| {
             event.prevent_default();
             let form_state = form_state.clone();
             wasm_bindgen_futures::spawn_local(async move {
                 let data = FormData {
                     name: form_state.name.clone(),
-                    budget_amount: form_state.budget_amount.clone()
+                    budget_amount: form_state.budget_amount,
                 };
-                
+
                 let resp = Request::post("http://localhost:5001/expense/add-group")
                     .json(&data)
                     .unwrap()
@@ -80,28 +78,27 @@ pub fn add_group_form() -> Html {
                 let window = window().expect("error getting window");
                 let location = window.location();
                 let _ = location.set_href("/expense");
-
             });
         })
     };
 
     html! {
-        <form class="mx-auto" style="width: 250px;" onsubmit={onsubmit}>
-            <div class="mb-3 text-end">
-                <label for="budgetName" class="form-label">{ "Budget Name" }</label>
-                <input type="text" class="form-control text-end" id="budgetName" aria-describedby="budgetNameHelp" ref={input_name_ref} onchange={on_name_change}/>
-                <div id="budgetNameHelp" class="form-text">{ "Name your budget" }</div>
-            </div>
-            <div class="mb-3 text-end">
-                <label for="amount" class="form-label">{ "The Cost for budget" }</label>
-                <input type="text" class="form-control text-end" id="amount" placeholder="Number up to 2 decimal places" pattern="[0-9]*[.]?[0-9]{0,2}" ref={input_number_ref} onchange={on_number_change} />
-            </div>
-            <div class="d-flex justify-content-end">
-                <button type="reset" class="btn btn-secondary me-1">{ "Reset" }</button>
-                <button type="submit" class="btn btn-primary ms-1">{ "Submit" }</button>
-            </div>
-        </form>
-        }
+    <form class="mx-auto" style="width: 250px;" onsubmit={onsubmit}>
+        <div class="mb-3 text-end">
+            <label for="budgetName" class="form-label">{ "Budget Name" }</label>
+            <input type="text" class="form-control text-end" id="budgetName" aria-describedby="budgetNameHelp" ref={input_name_ref} onchange={on_name_change}/>
+            <div id="budgetNameHelp" class="form-text">{ "Name your budget" }</div>
+        </div>
+        <div class="mb-3 text-end">
+            <label for="amount" class="form-label">{ "The Cost for budget" }</label>
+            <input type="text" class="form-control text-end" id="amount" placeholder="Number up to 2 decimal places" pattern="[0-9]*[.]?[0-9]{0,2}" ref={input_number_ref} onchange={on_number_change} />
+        </div>
+        <div class="d-flex justify-content-end">
+            <button type="reset" class="btn btn-secondary me-1">{ "Reset" }</button>
+            <button type="submit" class="btn btn-primary ms-1">{ "Submit" }</button>
+        </div>
+    </form>
+    }
 }
 
 #[function_component(AddGroup)]
@@ -109,7 +106,7 @@ pub fn add_group() -> Html {
     let navigator = use_navigator().unwrap();
 
     let add_button = {
-        let navigator = navigator.clone();
+        let navigator = navigator;
         Callback::from(move |_| navigator.push(&super::super::ExpenseRoute::AddGroupForm))
     };
 

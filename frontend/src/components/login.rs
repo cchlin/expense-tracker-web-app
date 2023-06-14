@@ -1,7 +1,5 @@
-use std::panic::Location;
-
-use yew::prelude::*;
 use web_sys::window;
+use yew::prelude::*;
 
 #[derive(Properties, Clone, PartialEq)]
 struct FormInputProps {
@@ -11,10 +9,16 @@ struct FormInputProps {
 }
 
 #[function_component(FormInput)]
-fn form_input(FormInputProps { label, name, input_type }: &FormInputProps) -> Html {
+fn form_input(
+    FormInputProps {
+        label,
+        name,
+        input_type,
+    }: &FormInputProps,
+) -> Html {
     html! {
         <div class="rol d-flex">
-            <label class="col text-end m-1" for={name.clone()}>{ label.clone() }</label>
+            <label class="col m-1" for={name.clone()}>{ label.clone() }</label>
             <input class="col justify-content-end m-1" id={name.clone()} type={input_type.clone()} />
         </div>
     }
@@ -28,7 +32,13 @@ struct FormButtonProps {
 }
 
 #[function_component(FormButton)]
-fn form_button(FormButtonProps { class, button_type, children }: &FormButtonProps) -> Html {
+fn form_button(
+    FormButtonProps {
+        class,
+        button_type,
+        children,
+    }: &FormButtonProps,
+) -> Html {
     html! {
         <button class={class.clone()} type={button_type.clone()}>{ children.clone() }</button>
     }
@@ -46,15 +56,21 @@ pub fn login() -> Html {
     };
 
     html! {
-        <div class="login-page" style="max-width: 400px;">
-            <h1 class="title text-center">{ "Login" }</h1>
+        <div class="mx-auto" style="max-width: 350px;">
+            <h1 class="title text-center">{ "Sign In" }</h1>
             <form onsubmit={handle_submit}>
                 <FormInput label="Email" name="email" input_type="text" />
                 <FormInput label="Password" name="password" input_type="password" />
-                <FormButton class="btn-submit" button_type="submit">{ "Sign In" }</FormButton>
-                <div class="links">
-                    <a href="/signup">{ "Sign Up" }</a>
-                    <a href="/forgot">{ "Forgot Password?" }</a>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <FormButton class="btn btn-primary" button_type="submit">{ "Sign In" }</FormButton>
+                        </div>
+                        <div class="col">
+                                <a class="row justify-content-end" style="font-size: 12px;" href="/">{ "Sign Up" }</a>
+                                <a class="row justify-content-end" style="font-size: 12px;" href="/">{ "Forgot Password?" }</a>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>

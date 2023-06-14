@@ -1,6 +1,6 @@
-use rusqlite::{params, Result};
-use super::connect::initialize_database;
 use super::super::controllers::transaction_controller::Transaction;
+use super::connect::initialize_database;
+use rusqlite::{params, Result};
 
 pub fn create(amount: f64, description: String, date: String, budget_group_id: i32) -> Result<i32> {
     let conn = initialize_database().unwrap();
@@ -15,9 +15,12 @@ pub fn create(amount: f64, description: String, date: String, budget_group_id: i
 
 pub fn get_all(group_id: i32) -> Result<Vec<Transaction>> {
     let conn = initialize_database().unwrap();
-    
-    let query = format!("SELECT * FROM transactions WHERE budget_group_id = {}", group_id);
-    
+
+    let query = format!(
+        "SELECT * FROM transactions WHERE budget_group_id = {}",
+        group_id
+    );
+
     let mut stmt = conn.prepare(&query)?;
 
     let transaction_iter = stmt.query_map([], |row| {
