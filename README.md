@@ -63,7 +63,7 @@ Navigating to the expense page, users can see the budget groups. Clicking on a g
 
 The project was a successful demonstration of full-stack development in Rust. The application is functional and the user interface is intuitive and responsive. However, some challenges arose during development, especially around handling HTTP requests and responses. Also, Yew framework and understanding the intricacies of database interactions posed a significant challenge.
 
-One area that's still a bit beyond my grasp is user authentication and authorization. It's a vital part of any secure application, but it's also a complex topic. I'm still in the process of learning and understanding its intricacies. In the future, I'd like to improve error handling, add more comprehensive tests, and implement additional features such as user authentication and more detailed budget analysis.
+One area that's still a bit beyond my grasp is user authentication and authorization. It's a vital part of any secure application, but it's also a complex topic. I'm still in the process of learning and understanding its intricacies. In the future, I'd like to improve error handling, add more comprehensive tests, and complete features such as user authentication and more detailed budget analysis.
 
 ## Acknowledgments
 
