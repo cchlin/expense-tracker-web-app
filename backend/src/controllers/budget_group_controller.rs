@@ -3,6 +3,7 @@ use actix_web::{web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
+/// Struct representing a Group object
 #[derive(Serialize)]
 pub struct Group {
     pub id: i32,
@@ -11,6 +12,7 @@ pub struct Group {
     pub remaining_budget: f64,
 }
 
+/// Returns all budget groups
 pub async fn get_budget_groups() -> impl Responder {
     match budget_group_model::get_all() {
         Ok(groups) => HttpResponse::Ok().json(&groups),
@@ -18,14 +20,16 @@ pub async fn get_budget_groups() -> impl Responder {
     }
 }
 
+/// Struct to receive data for a new group from a form
 #[derive(Deserialize)]
 pub struct FormData {
     name: String,
     budget_amount: f64,
 }
 
+/// Adds a new budget group
 pub async fn add_group(req_body: web::Json<FormData>) -> impl Responder {
-    match budget_group_model::create(req_body.name.clone(), req_body.budget_amount.clone()) {
+    match budget_group_model::create(req_body.name.clone(), req_body.budget_amount) {
         Ok(id) => HttpResponse::Ok().json(json!({ "id": id })),
         Err(e) => {
             println!("error: {:?}", e);
@@ -34,6 +38,7 @@ pub async fn add_group(req_body: web::Json<FormData>) -> impl Responder {
     }
 }
 
+/// Deletes a budget group given its ID
 pub async fn delete_group(path: web::Path<i32>) -> impl Responder {
     let id = path.into_inner();
     match budget_group_model::delete(id) {
@@ -42,6 +47,7 @@ pub async fn delete_group(path: web::Path<i32>) -> impl Responder {
     }
 }
 
+/// Returns one budget group given its ID
 pub async fn get_one_group(path: web::Path<i32>) -> impl Responder {
     let id = path.into_inner();
     match budget_group_model::get_one(id) {
@@ -49,17 +55,3 @@ pub async fn get_one_group(path: web::Path<i32>) -> impl Responder {
         Err(e) => HttpResponse::InternalServerError().body(format!("error: {:?}", e)),
     }
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-
-//     #[actix_rt::test]
-//     async fn test_get_budget_groups() {
-//         let group = get_budget_groups().await;
-//         assert_eq!(group.id, 1);
-//         assert_eq!(group.name, "Groceries");
-//         assert_eq!(group.budget_amount, 200.00);
-//         assert_eq!(group.remaining_budget, 50.00);
-//     }
-// }
