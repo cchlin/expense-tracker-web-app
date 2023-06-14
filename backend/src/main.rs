@@ -2,16 +2,16 @@ mod controllers;
 mod models;
 
 use actix_cors::Cors;
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{web, App, HttpServer};
 use controllers::{budget_group_controller, transaction_controller};
 
+/// Main function that sets up and starts the server
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let server = HttpServer::new(move || {
         let cors = Cors::permissive();
         App::new()
             .wrap(cors)
-            .route("/", web::get().to(index))
             .route(
                 "/expense",
                 web::get().to(budget_group_controller::get_budget_groups),
@@ -47,8 +47,4 @@ async fn main() -> std::io::Result<()> {
     println!("Server running on http://localhost:5001");
 
     server.await
-}
-
-pub async fn index() -> impl Responder {
-    HttpResponse::Ok().body("Welcome to the Budget Tracker App")
 }
