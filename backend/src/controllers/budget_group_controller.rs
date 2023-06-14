@@ -11,14 +11,6 @@ pub struct Group {
     pub remaining_budget: f64,
 }
 
-// pub async fn get_budget_groups() -> Vec<Group> {
-//     match budget_group_model::get_all() {
-//         Ok(groups) => {
-//             groups
-//         },
-//         Err(_) => Vec::new(),
-//     }
-// }
 
 pub async fn get_budget_groups() -> impl Responder {
     match budget_group_model::get_all() {
@@ -40,7 +32,6 @@ pub struct FormData {
 pub async fn add_group(req_body: web::Json<FormData>) -> impl Responder {
     match budget_group_model::create(req_body.name.clone(), req_body.budget_amount.clone()) {
         Ok(id) => {
-            println!("id: {}", id);
             HttpResponse::Ok().json(json!({"id": id}))
         }
         Err(e) => {
@@ -51,7 +42,6 @@ pub async fn add_group(req_body: web::Json<FormData>) -> impl Responder {
 }
 
 pub async fn delete_group(path: web::Path<i32>) -> impl Responder {
-    println!("hit /expense/group delete");
     let id = path.into_inner();
     match budget_group_model::delete(id) {
         Ok(_) => HttpResponse::Ok().json(json!({"status": "success"})),

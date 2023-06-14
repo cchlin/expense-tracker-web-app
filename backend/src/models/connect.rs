@@ -11,8 +11,7 @@ pub fn initialize_database() -> Result<Connection> {
             id INTEGER PRIMARY KEY,
             amount REAL NOT NULL,
             description TEXT NOT NULL,
-            created_at TEXT NOT NULL,
-            updated_at TEXT NOT NULL,
+            date TEXT NOT NULL,
             budget_group_id INTEGER NOT NULL,
             FOREIGN KEY(budget_group_id) REFERENCES budget_groups(id)
         )",

@@ -286,6 +286,7 @@ dependencies = [
  "actix-cors",
  "actix-rt",
  "actix-web",
+ "chrono",
  "rusqlite",
  "serde",
  "serde_json",

@@ -9,7 +9,7 @@ pub struct LayoutProps {
 pub fn layout(LayoutProps { children }: &LayoutProps) -> Html {
     use super::footer::Footer;
     use super::navbar::Navbar;
-    use yew::{classes, html};
+    use yew::html;
 
     html! {
         <>

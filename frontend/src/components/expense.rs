@@ -1,4 +1,5 @@
 use super::add_group::{AddGroup, AddGroupForm};
+use super::add_transaction::AddTransactionForm;
 use gloo_net::http::Request;
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
@@ -13,6 +14,8 @@ pub enum ExpenseRoute {
     Group { id: i32 },
     #[at("/expense/add_group")]
     AddGroupForm,
+    #[at("/expense/group/:id/add_transaction")]
+    AddTransactionForm { id: i32 },
 }
 
 pub fn expense_setting(route: ExpenseRoute) -> Html {
@@ -22,6 +25,9 @@ pub fn expense_setting(route: ExpenseRoute) -> Html {
         },
         ExpenseRoute::Group { id } => html! {
             <GroupTransaction id={id} />
+        },
+        ExpenseRoute::AddTransactionForm { id }=> html! {
+            <AddTransactionForm budget_group_id={id} />
         }
     }
 }
@@ -109,7 +115,7 @@ pub fn expense() -> Html {
         let groups = groups.clone();
         use_effect_with_deps(
             move |_| {
-                let groups = groups.clone();
+                // let groups = groups.clone();
                 wasm_bindgen_futures::spawn_local(async move {
                     let fetched_groups: Vec<Group> = Request::get("http://localhost:5001/expense")
                         .send()

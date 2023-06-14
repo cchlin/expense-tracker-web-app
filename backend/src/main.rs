@@ -3,7 +3,7 @@ mod models;
 
 use actix_cors::Cors;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use controllers::budget_group_controller;
+use controllers::{budget_group_controller, transaction_controller};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -15,6 +15,7 @@ async fn main() -> std::io::Result<()> {
             .route("/expense", web::get().to(budget_group_controller::get_budget_groups))
             .route("/expense/add-group", web::post().to(budget_group_controller::add_group))
             .route("/expense/group/{id}", web::delete().to(budget_group_controller::delete_group))
+            .route("/expense/group", web::post().to(transaction_controller::add_transaction))
     })
     .bind(("127.0.0.1", 5001))?
     .run();

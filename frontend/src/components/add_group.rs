@@ -1,25 +1,10 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
-use web_sys::HtmlInputElement;
 use serde::{Serialize, Deserialize};
 use gloo_net::http::Request;
-use web_sys::{console, window};
+use web_sys::{console, window, HtmlInputElement};
 use serde_wasm_bindgen::to_value;
 
-
-// #[derive(Clone, Routable, PartialEq)]
-// pub enum ExpenseRoute {
-//     #[at("/expense/add_group")]
-//     AddGroupForm,
-// }
-
-// pub fn expense_setting(route: ExpenseRoute) -> Html {
-//     match route {
-//         ExpenseRoute::AddGroupForm => html! {
-//             <AddGroupForm />
-//         },
-//     }
-// }
 
 #[derive(Clone, PartialEq, Properties, Serialize, Deserialize)]
 struct FormData {
@@ -75,7 +60,6 @@ pub fn add_group_form() -> Html {
             event.prevent_default();
             let form_state = form_state.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                // let form_state = form_state.clone();
                 let data = FormData {
                     name: form_state.name.clone(),
                     budget_amount: form_state.budget_amount.clone()
@@ -88,9 +72,6 @@ pub fn add_group_form() -> Html {
                     .await
                     .unwrap();
 
-                // if not seccuess, output the status code
-                // if resp.status() == 200 {
-                // }
                 if resp.status() != 200 {
                     let jsvalueresp = to_value(&resp.status()).unwrap();
                     console::log_1(&jsvalueresp);
