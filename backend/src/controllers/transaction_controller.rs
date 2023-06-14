@@ -42,10 +42,7 @@ pub async fn add_transaction(req_body: web::Json<TransactionData>) -> impl Respo
     ) {
         Ok(id) => {
             // update the remaining budget in the group
-            match budget_group_model::minus_remaining(
-                req_body.budget_group_id,
-                req_body.amount,
-            ) {
+            match budget_group_model::minus_remaining(req_body.budget_group_id, req_body.amount) {
                 Ok(()) => HttpResponse::Ok().json(json!({ "id": id })),
                 Err(e) => {
                     println!("Error updating remaining budget: {:?}", e);
@@ -66,15 +63,13 @@ pub async fn delete_transaction(req_body: web::Json<Transaction>) -> impl Respon
     let amount = req_body.amount;
     let budget_group_id = req_body.budget_group_id;
     match transaction_model::delete(id) {
-        Ok(_) => {
-            match budget_group_model::plus_remaining(budget_group_id, amount) {
-                Ok(()) => HttpResponse::Ok().json(json!({"status": "success"})),
-                Err(e) => {
-                    println!("Error updating remaining budget: {:?}", e);
-                    HttpResponse::InternalServerError().body(format!("error: {:?}", e))
-                }
+        Ok(_) => match budget_group_model::plus_remaining(budget_group_id, amount) {
+            Ok(()) => HttpResponse::Ok().json(json!({"status": "success"})),
+            Err(e) => {
+                println!("Error updating remaining budget: {:?}", e);
+                HttpResponse::InternalServerError().body(format!("error: {:?}", e))
             }
-        }
+        },
 
         Err(e) => {
             println!("{:?}", e);

@@ -16,7 +16,7 @@ use rusqlite::{params, Result};
 pub fn create(name: String, budget_amount: f64) -> Result<i32> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
-    
+
     // Executing the SQL query to insert the new budget group
     conn.execute(
         "INSERT INTO budget_groups (name, budget_amount, remaining_budget) VALUES(?1, ?2, ?3)",
@@ -72,7 +72,7 @@ pub fn get_all() -> Result<Vec<Group>> {
 pub fn delete(id: i32) -> Result<()> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
- 
+
     // Executing the SQL query to delete the budget group
     conn.execute("DELETE FROM budget_groups WHERE id = ?1", params![id])?;
 
@@ -100,7 +100,7 @@ pub fn minus_remaining(id: i32, amount_to_deduct: f64) -> Result<()> {
     // Establishing a connection with the database
     let conn = initialize_database().unwrap();
 
-     // Executing the SQL query to reduce the remaining budget
+    // Executing the SQL query to reduce the remaining budget
     conn.execute(
         "UPDATE budget_groups SET remaining_budget = remaining_budget - ?1 WHERE id = ?2",
         params![amount_to_deduct, id],
@@ -189,5 +189,4 @@ mod tests {
         assert!(groups.iter().find(|g| g.id == 1).is_none());
         Ok(())
     }
-
 }

@@ -97,7 +97,12 @@ mod tests {
 
     #[test]
     fn test_create() -> Result<()> {
-        let id = create(100.0, String::from("Test Transaction"), String::from("2023-06-15"), 1)?;
+        let id = create(
+            100.0,
+            String::from("Test Transaction"),
+            String::from("2023-06-15"),
+            1,
+        )?;
         assert!(id > 0);
         Ok(())
     }
