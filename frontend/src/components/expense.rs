@@ -1,34 +1,30 @@
-use super::add_group::{AddGroup, AddGroupForm};
-use super::add_transaction::AddTransactionForm;
-use super::group::GroupTransaction;
-use gloo_net::http::Request;
-use serde::{Deserialize, Serialize};
-use serde_wasm_bindgen::to_value;
-use web_sys::console;
-use yew::prelude::*;
-use yew_router::Routable;
+use super::add_group::{AddGroup, AddGroupForm};  // Import AddGroup and AddGroupForm components
+use super::add_transaction::AddTransactionForm;  // Import AddTransactionForm component
+use super::group::GroupTransaction;  // Import GroupTransaction component
+use gloo_net::http::Request;  // Import Request from the gloo_net crate for making HTTP requests
+use serde::{Deserialize, Serialize};  // Import Deserialize and Serialize from the serde crate for (de)serialization of data
+use serde_wasm_bindgen::to_value;  // Import to_value function for converting data into JsValue
+use web_sys::console;  // Import console for logging to the console
+use yew::prelude::*;  // Import all entities from the prelude module of the Yew crate
+use yew_router::Routable;  // Import Routable from the yew_router crate for defining routes
 
+// Define the routes for the Expense component
 #[derive(Clone, Routable, PartialEq)]
 pub enum ExpenseRoute {
-    #[at("/expense/group/:id")]
+    #[at("/expense/group/:id")]  // Route for a specific group
     Group { id: i32 },
-    #[at("/expense/add_group")]
+    #[at("/expense/add_group")]  // Route for adding a new group
     AddGroupForm,
-    #[at("/expense/group/:id/add_transaction")]
+    #[at("/expense/group/:id/add_transaction")]  // Route for adding a new transaction to a group
     AddTransactionForm { id: i32 },
 }
 
+// Function to switch between different routes of the Expense component
 pub fn expense_setting(route: ExpenseRoute) -> Html {
     match route {
-        ExpenseRoute::AddGroupForm => html! {
-            <AddGroupForm />
-        },
-        ExpenseRoute::Group { id } => html! {
-            <GroupTransaction id={id} />
-        },
-        ExpenseRoute::AddTransactionForm { id } => html! {
-            <AddTransactionForm budget_group_id={id} />
-        },
+        ExpenseRoute::AddGroupForm => html! { <AddGroupForm /> },  // AddGroupForm route leads to AddGroupForm component
+        ExpenseRoute::Group { id } => html! { <GroupTransaction id={id} /> },  // Group route leads to GroupTransaction component
+        ExpenseRoute::AddTransactionForm { id } => html! { <AddTransactionForm budget_group_id={id} /> },  // AddTransactionForm route leads to AddTransactionForm component
     }
 }
 

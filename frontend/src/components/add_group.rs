@@ -1,9 +1,9 @@
-use gloo_net::http::Request;
-use serde::{Deserialize, Serialize};
-use serde_wasm_bindgen::to_value;
-use web_sys::{console, window, HtmlInputElement};
-use yew::prelude::*;
-use yew_router::prelude::*;
+use gloo_net::http::Request;  // Import Request from the gloo_net crate for making HTTP requests
+use serde::{Deserialize, Serialize};  // Import Deserialize and Serialize from the serde crate for (de)serialization of data
+use serde_wasm_bindgen::to_value;  // Import to_value function for converting data into JsValue
+use web_sys::{console, window, HtmlInputElement};  // Import some web_sys entities for interacting with the web API
+use yew::prelude::*;  // Import all entities from the prelude module of the Yew crate
+use yew_router::prelude::*;  // Import all entities from the prelude module of the yew_router crate
 
 #[derive(Clone, PartialEq, Properties, Serialize, Deserialize)]
 struct FormData {
