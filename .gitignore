@@ -29,3 +29,6 @@
 # OS generated files
 .DS_Store
 Desktop.ini
+
+# Yew artifacts
+/frontend/dist
