@@ -1,5 +1,5 @@
 use yew::prelude::*;
-use yew_router::{prelude::*, navigator};
+use yew_router::prelude::*;
 use web_sys::HtmlInputElement;
 use serde::{Serialize, Deserialize};
 use gloo_net::http::Request;
@@ -7,19 +7,19 @@ use web_sys::console;
 use serde_wasm_bindgen::to_value;
 
 
-#[derive(Clone, Routable, PartialEq)]
-pub enum ExpenseRoute {
-    #[at("/expense/add_group")]
-    AddGroupForm,
-}
+// #[derive(Clone, Routable, PartialEq)]
+// pub enum ExpenseRoute {
+//     #[at("/expense/add_group")]
+//     AddGroupForm,
+// }
 
-pub fn expense_setting(route: ExpenseRoute) -> Html {
-    match route {
-        ExpenseRoute::AddGroupForm => html! {
-            <AddGroupForm />
-        },
-    }
-}
+// pub fn expense_setting(route: ExpenseRoute) -> Html {
+//     match route {
+//         ExpenseRoute::AddGroupForm => html! {
+//             <AddGroupForm />
+//         },
+//     }
+// }
 
 #[derive(Clone, PartialEq, Properties, Serialize, Deserialize)]
 struct FormData {
@@ -28,7 +28,7 @@ struct FormData {
 }
 
 #[function_component(AddGroupForm)]
-fn add_group_form() -> Html {
+pub fn add_group_form() -> Html {
     let input_name_ref = use_node_ref();
     let input_number_ref = use_node_ref();
     let navigator = use_navigator().unwrap();
@@ -90,13 +90,16 @@ fn add_group_form() -> Html {
                     .await
                     .unwrap();
 
+                // if not seccuess, output the status code
+                // if resp.status() == 200 {
+                // }
                 if resp.status() != 200 {
                     let jsvalueresp = to_value(&resp.status()).unwrap();
                     console::log_1(&jsvalueresp);
                 }
 
             });
-            navigator.push(&super::super::Route::Expense);
+            navigator.replace(&super::super::Route::Expense);
         })
     };
 
@@ -125,7 +128,7 @@ pub fn add_group() -> Html {
 
     let add_button = {
         let navigator = navigator.clone();
-        Callback::from(move |_| navigator.push(&ExpenseRoute::AddGroupForm))
+        Callback::from(move |_| navigator.push(&super::super::ExpenseRoute::AddGroupForm))
     };
 
     html! {

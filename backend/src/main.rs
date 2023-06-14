@@ -1,9 +1,11 @@
 mod controllers;
+mod models;
 
 use actix_cors::Cors;
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use controllers::budget_group_controller;
 use serde::Deserialize;
+use serde_json::json;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -24,7 +26,7 @@ async fn main() -> std::io::Result<()> {
 }
 
 pub async fn index() -> impl Responder {
-    HttpResponse::Ok().body("Welcome to the Expense Tracker App")
+    HttpResponse::Ok().body("Welcome to the Budget Tracker App")
 }
 
 pub async fn get_budget_groups() -> impl Responder {
@@ -46,11 +48,25 @@ pub struct FormData {
 // #[post("/expense/add_group")]
 pub async fn add_group(req_body: web::Json<FormData>) -> impl Responder {
     println!("hit /expense/add-group");
-    println!("Name: {}, Budget: {}", req_body.name, req_body.budget_amount);
-
-    HttpResponse::Ok()
+    println!(
+        "Name: {}, Budget: {}",
+        req_body.name, req_body.budget_amount
+    );
+    let data = FormData {
+        name: req_body.name.clone(),
+        budget_amount: req_body.budget_amount,
+    };
+    match budget_group_controller::add_group(data).await {
+        Ok(id) => {
+            println!("id: {}", id);
+            HttpResponse::Ok().json(json!({"id": id}))
+        }
+        Err(e) => {
+            println!("error: {:?}", e);
+            HttpResponse::InternalServerError().body(format!("error: {:?}", e))
+        }
+    }
 }
-
 
 #[cfg(test)]
 mod tests {

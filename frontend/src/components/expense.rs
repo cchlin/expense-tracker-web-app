@@ -1,9 +1,31 @@
-use super::add_group::AddGroup;
+use super::add_group::{AddGroup, AddGroupForm};
 use gloo_net::http::Request;
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
 use web_sys::console;
 use yew::prelude::*;
+use yew_router::{Routable, navigator};
+use super::group::GroupTransaction;
+
+#[derive(Clone, Routable, PartialEq)]
+pub enum ExpenseRoute {
+    #[at("/expense/group/:id")]
+    Group { id: i32 },
+    #[at("/expense/add_group")]
+    AddGroupForm,
+}
+
+pub fn expense_setting(route: ExpenseRoute) -> Html {
+    match route {
+        ExpenseRoute::AddGroupForm => html! {
+            <AddGroupForm />
+        },
+        ExpenseRoute::Group { id } => html! {
+            <GroupTransaction id={id} />
+        }
+    }
+}
+
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 struct Group {
@@ -31,10 +53,35 @@ struct GroupProps {
 #[function_component(GroupCard)]
 fn group_card(GroupProps { group }: &GroupProps) -> Html {
     let field = group.fields();
+
+    let url = format!("/expense/group/{}", group.id);
+    let spent = group.budget_amount - group.remaining_budget;
+
     html! {
-        <div class={classes!("card", "my-4")}>
-            { for field.iter().map(|field| html! { <p class="text-end">{ field }</p> }) }
-        </div>
+            <div class="card my-4 mx-auto text-bg-light" style="width: 400px;">
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row fs-5">
+                            // <a href={url}>
+                                <div class="col">{ group.name.to_string() }</div>
+                                <div class="col text-end">{ format!("$ {}", group.remaining_budget.to_string()) }</div>
+                            // </a>
+                        </div>
+                       <div class="row">
+                           <div class="col fst-lighter" style="font-size: 13px;">
+                                <span>{ format!("${}", group.budget_amount.to_string()) }</span>
+                                <span class="text-danger">{ format!("  - ${}", spent.to_string()) }</span>
+                           </div>
+                           <div class="col text-end">
+                            <a href={url} class="link-primary link-offset-3 link-underline-opacity-0 link-underline-opacity-100-hover">{ "Check" }</a>
+                           </div>
+                       </div>
+                    </div>
+                    // { for field.iter().map(|field| html! {
+                    //     <p class="text-end">{ field }</p>
+                    // }) }
+                </div>
+            </div>
     }
 }
 

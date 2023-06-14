@@ -1,6 +1,6 @@
 use rusqlite::{Connection, Result};
 
-pub fn initialize_database() -> Result<Connection> {    
+pub fn initialize_database() -> Result<Connection> {
     // Open a new connection to a SQLite database. If a database
     // does not exist at the path, one is created.
     let connection = Connection::open("expense_tracker_database.db")?;

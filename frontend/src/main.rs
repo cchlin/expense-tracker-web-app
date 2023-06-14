@@ -1,7 +1,6 @@
 mod components;
 
-use components::add_group::{expense_setting, ExpenseRoute};
-use components::expense::Expense;
+use components::expense::{Expense, expense_setting, ExpenseRoute};
 use components::layout::Layout;
 use yew::prelude::*;
 use yew_router::prelude::*;
