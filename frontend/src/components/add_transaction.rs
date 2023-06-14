@@ -4,6 +4,8 @@ use serde_wasm_bindgen::to_value;
 use web_sys::{console, window, HtmlInputElement};
 use yew::prelude::*;
 
+// A struct that holds properties for a transaction,
+// used in HTTP requests for creating a new transaction.
 #[derive(Serialize)]
 pub struct TransactionData {
     amount: f64,
@@ -11,11 +13,15 @@ pub struct TransactionData {
     budget_group_id: i32,
 }
 
+// A struct that holds the group ID for which a transaction will be added, 
+// used as properties for the AddTransactionForm component.
 #[derive(Clone, PartialEq, Properties)]
 pub struct AddTransactionFormProps {
     pub budget_group_id: i32,
 }
 
+// A functional component that creates a form for adding a new transaction.
+// The form handles user input, data changes, form submission, and form reset.
 #[function_component(AddTransactionForm)]
 pub fn add_transaction_form(
     AddTransactionFormProps { budget_group_id }: &AddTransactionFormProps,

@@ -1,6 +1,8 @@
 use web_sys::window;
 use yew::prelude::*;
 
+// A struct to hold the properties for the FormInput
+// component, such as label, name, and input type.
 #[derive(Properties, Clone, PartialEq)]
 struct FormInputProps {
     label: String,
@@ -23,7 +25,8 @@ fn form_input(
         </div>
     }
 }
-
+//A struct to hold the properties for the FormButton component, such as the class, type of the button,
+// and the children components to be rendered inside the button. 
 #[derive(Properties, Clone, PartialEq)]
 struct FormButtonProps {
     class: String,
@@ -31,6 +34,7 @@ struct FormButtonProps {
     children: Children,
 }
 
+// A functional component that creates a button
 #[function_component(FormButton)]
 fn form_button(
     FormButtonProps {
@@ -44,6 +48,8 @@ fn form_button(
     }
 }
 
+// A functional component that creates a login form. When the form is submitted,
+// it redirects the user to the "/expense" route.
 #[function_component(Login)]
 pub fn login() -> Html {
     let handle_submit = {

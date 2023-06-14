@@ -3,11 +3,14 @@ use gloo_net::http::Request;
 use yew::function_component;
 use yew::prelude::*;
 
+//  A struct to hold the group ID for the Sum component.
 #[derive(Clone, Properties, PartialEq)]
 pub struct SumProps {
     pub group_id: i32,
 }
 
+// A functional component that fetches a group's data from the server and displays
+// the budget amount, total spent, and remaining budget amount.
 #[function_component(Sum)]
 pub fn sum(SumProps { group_id }: &SumProps) -> Html {
     let group = use_state(|| Group {

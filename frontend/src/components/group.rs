@@ -6,6 +6,8 @@ use serde_wasm_bindgen::to_value;
 use web_sys::{console, window};
 use yew::prelude::*;
 
+// A functional component that creates two buttons: one for adding
+// a new transaction to a group and one for deleting the group.
 #[function_component(GroupButtons)]
 fn group_buttons(GroupIdProps { id }: &GroupIdProps) -> Html {
     let id = *id;
@@ -51,11 +53,14 @@ fn group_buttons(GroupIdProps { id }: &GroupIdProps) -> Html {
     }
 }
 
+// A struct holding the properties for the group ID,
+// which is used as props for components that need to handle the group data.
 #[derive(Properties, PartialEq, Clone)]
 pub struct GroupIdProps {
     pub id: i32,
 }
 
+// A struct to hold properties for a transaction.
 #[derive(Clone, Serialize, Deserialize, PartialEq)]
 struct Transaction {
     id: i32,
@@ -65,11 +70,14 @@ struct Transaction {
     budget_group_id: i32,
 }
 
+// A struct to hold transaction properties that can be passed into Yew components.
 #[derive(Properties, PartialEq, Clone)]
 struct TransactionProps {
     transaction: Transaction,
 }
 
+// A functional component that creates a card displaying a
+// single transaction's details.
 #[function_component(TransactionCard)]
 fn transaction_card(TransactionProps { transaction }: &TransactionProps) -> Html {
     let transaction = transaction.clone();
@@ -123,11 +131,15 @@ fn transaction_card(TransactionProps { transaction }: &TransactionProps) -> Html
     }
 }
 
+// A struct to hold a list of transactions,
+// used as a property for the TransactionList component.
 #[derive(Properties, PartialEq, Clone)]
 struct TransactionsProps {
     transactions: Vec<Transaction>,
 }
 
+// A functional component that takes a list of
+// transactions and maps each to a TransactionCard component.
 #[function_component(TransactionList)]
 fn transaction_list(TransactionsProps { transactions }: &TransactionsProps) -> Html {
     transactions
@@ -140,6 +152,9 @@ fn transaction_list(TransactionsProps { transactions }: &TransactionsProps) -> H
         .collect::<Html>()
 }
 
+// A functional component that fetches agroup's transactions,
+// sums up the total amount spent,and renders the list of transactions and 
+// the total amount.
 #[function_component(GroupTransaction)]
 pub fn show_group_transactions(GroupIdProps { id }: &GroupIdProps) -> Html {
     let transactions = use_state(Vec::new);
